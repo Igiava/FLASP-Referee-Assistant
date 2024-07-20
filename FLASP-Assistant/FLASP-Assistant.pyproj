@@ -21,6 +21,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Assistant_Window.py" />
     <Compile Include="Team_Entry.py" />
     <Compile Include="Team_Selection.py" />
   </ItemGroup>

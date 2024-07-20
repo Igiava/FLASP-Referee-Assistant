@@ -1,20 +1,32 @@
-# -*- coding: utf-8 -*-
+## -*- coding: utf-8 -*-
 import tkinter as tk
 from tkinter import Label, Button, OptionMenu, StringVar
+from Assistant_Window import AssistantWindow
 
 class TeamSelectionWindow:
     def __init__(self, left_team, right_team):
         self.window = tk.Toplevel()
         self.window.title("Выбор составов")
 
-        self.display_team(left_team, side="left")
-        self.display_team(right_team, side="right")
+        self.left_team = left_team
+        self.right_team = right_team
 
-        Button(self.window, text="Начать матч").pack()
+        self.left_team_positions = {}
+        self.right_team_positions = {}
+
+        self.display_team(left_team, side="left", positions_dict=self.left_team_positions)
+        self.display_team(right_team, side="right", positions_dict=self.right_team_positions)
+
+        Label(self.window, text="Команда, начинающая матч:").pack()
+        self.starting_team_var = StringVar()
+        self.starting_team_var.set(left_team.name)  # default value
+        OptionMenu(self.window, self.starting_team_var, left_team.name, right_team.name).pack()
+
+        Button(self.window, text="Начать матч", command=self.start_match).pack()
 
         self.window.mainloop()
 
-    def display_team(self, team, side):
+    def display_team(self, team, side, positions_dict):
         frame = tk.Frame(self.window)
         frame.pack(side=side, fill="both", expand=True)
 
@@ -28,5 +40,9 @@ class TeamSelectionWindow:
             Label(row, text=position).pack(side="left")
 
             player_var = StringVar()
-            player_var.set("Выберите игрока")  # default value
+            player_var.set(team.players[0].name)  # default value
             OptionMenu(row, player_var, *[player.name for player in team.players]).pack(side="right")
+            positions_dict[position] = player_var
+
+    def start_match(self):
+        AssistantWindow(self.left_team, self.right_team, self.left_team_positions, self.right_team_positions, self.starting_team_var.get())
